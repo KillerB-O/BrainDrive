@@ -5,3 +5,10 @@ uvicorn
 pydantic-settings
 pytest
 python-jose
+scikit-learn
+xgboost
+matplotlib
+pandas
+numpy
+shap
+joblib
