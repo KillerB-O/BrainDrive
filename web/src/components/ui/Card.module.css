@@ -1,0 +1,39 @@
+.card {
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-speed);
+  position: relative;
+  overflow: hidden;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: scale(1.02);
+}
+
+.white {
+  background-color: var(--color-background);
+  border: 2px solid var(--color-border);
+}
+
+.muted {
+  background-color: var(--color-muted);
+}
+
+.primary {
+  background-color: #DBEAFE; /* Light blue tint */
+  color: var(--color-primary);
+}
+
+.secondary {
+  background-color: #D1FAE5; /* Light emerald tint */
+  color: var(--color-secondary);
+}
+
+.accent {
+  background-color: #FEF3C7; /* Light amber tint */
+  color: var(--color-accent);
+}

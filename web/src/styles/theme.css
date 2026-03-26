@@ -1,0 +1,77 @@
+/* web/src/styles/theme.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Colors - Flat Design Palette */
+  --color-background: #FFFFFF;
+  --color-foreground: #111827;
+  --color-primary: #3B82F6;
+  --color-primary-hover: #2563EB;
+  --color-secondary: #10B981;
+  --color-secondary-hover: #059669;
+  --color-accent: #F59E0B;
+  --color-accent-hover: #D97706;
+  --color-muted: #F3F4F6;
+  --color-muted-hover: #E5E7EB;
+  --color-border: #E5E7EB;
+  
+  /* Typography */
+  --font-family: 'Outfit', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* Spacing & Sizing */
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --transition-speed: 200ms;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Flat Design Utilities */
+.shadow-none {
+  box-shadow: none !important;
+}
+
+.hover-scale {
+  transition: transform var(--transition-speed);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.card-hover:hover {
+  transform: scale(1.02);
+}
