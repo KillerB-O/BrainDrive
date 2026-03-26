@@ -1,7 +1,18 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Literal, List, Dict, Any
 from uuid import UUID
+from datetime import datetime
 
+# --- AUTH & USER SCHEMAS ---
+class UserProfileResponse(BaseModel):
+    id: UUID
+    email: str
+    full_name: Optional[str]
+    is_active: bool
+
+    model_config = ConfigDict(from_attributes=True)
+
+# --- SCORING & APPLICATION SCHEMAS ---
 class ApplicationInput(BaseModel):
     """The shape of the data received from the user."""
     monthly_upi_txn_count: int = Field(ge=0, le=1000, description="Monthly UPI transactions count")
@@ -26,13 +37,6 @@ class ScoreResponse(BaseModel):
     tier: str
     probability: float
     top_factors: List[Factor]
-    created_at: str
+    created_at: datetime
 
-class UserProfileResponse(BaseModel):
-    id: UUID
-    email: str
-    full_name: Optional[str]
-    is_active: bool
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

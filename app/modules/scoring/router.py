@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db.session import get_db
 from app.core.auth import authenticate_user
-from app.modules.scoring.schemas import ApplicationInput
+from app.core.api.schemas import ApplicationInput
 from app.modules.scoring.service import ScoringService
 
 router = APIRouter()

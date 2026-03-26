@@ -4,8 +4,9 @@ from functools import lru_cache
 class Settings(BaseSettings):
     database_url: str
     supabase_url: str
-    supabase_key: str
+    supabase_service_role_key: str
     supabase_jwt_secret: str
+    supabase_anion_key: str
 
     class Config:
         env_file = ".env"
@@ -13,3 +14,6 @@ class Settings(BaseSettings):
 @lru_cache()
 def get_settings()->Settings:
     return Settings()
+
+
+

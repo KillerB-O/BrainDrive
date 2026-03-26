@@ -5,7 +5,7 @@ from datetime import datetime
 import json
 
 from app.core.auth import get_current_user_id
-from app.modules.scoring.schemas import ApplicationInput
+from app.core.api.schemas import ApplicationInput
 
 class ScoringService:
     """
