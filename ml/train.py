@@ -62,7 +62,7 @@ df = create_features(df)
 # Drop rows without target
 df = df.dropna(subset=["TARGET"])
 
-MODEL_FEATURES = FEATURE_NAMES + [
+MODEL_FEATURES = FEATURE_NAMES +  [
     "income_credit_ratio",
     "annuity_income_ratio",
     "employment_years",

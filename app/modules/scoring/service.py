@@ -1,63 +1,41 @@
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
-from uuid import UUID
-from datetime import datetime
-import json
+from app.modules.scoring.repository import insert_application, insert_score, fetch_scores, fetch_score_by_id
+from app.modules.scoring.model import predict
+from app.modules.scoring.schema import ApplicationInput
 
-from app.core.auth import get_current_user_id
-from app.core.api.schemas import ApplicationInput
+async def create_application(data: ApplicationInput, user_id: str, db: AsyncSession):
+    # 1. Store application data
+    app_id = await insert_application(db, data, user_id)
+    
+    # 2. Extract features for model
+    # Note: Model expects a flat list of features
+    features = [
+        data.monthly_upi_txn_count,
+        data.avg_monthly_inflow,
+        data.utility_payment_streak,
+        data.mobile_recharge_freq,
+        1.0 if data.gst_filed else 0.0,
+        data.rental_payment_months,
+        data.years_at_address
+    ]
+    
+    # 3. Predict using ML model
+    score, tier, prob, shap_values, version = predict(features)
+    
+    # 4. Store score results
+    await insert_score(db, app_id, score, tier, prob, shap_values, version)
+    
+    return {
+        "application_id": app_id,
+        "score": score,
+        "tier": tier,
+        "probability": prob,
+        "model_version": version,
+        "summary": f"Your alternative credit score is {score} ({tier.upper()})."
+    }
 
-class ScoringService:
-    """
-    Handles credit scoring applications and history.
-    Uses raw SQL to manage DB interactions via the shared context user_id.
-    """
-    def __init__(self, db: AsyncSession):
-        self.db = db
+async def get_user_scores(user_id: str, db: AsyncSession):
+    return await fetch_scores(db, user_id)
 
-    async def process_score(self, data: ApplicationInput):
-        user_id = get_current_user_id()
-        
-        insert_query = text("""
-            INSERT INTO applications (
-                user_id, monthly_upi_txn_count, avg_monthly_inflow, 
-                utility_payment_streak, mobile_recharge_freq, gst_filed, 
-                rental_payment_months, employment_type, years_at_address, 
-                extra_data, created_at
-            ) VALUES (
-                :uid, :upi, :inf, :strk, :rech, :gst, :rent, :emp, :yrs, :extra, :now
-            ) RETURNING id
-        """)
-        
-        result = await self.db.execute(insert_query, {
-            "uid": user_id,
-            "upi": data.monthly_upi_txn_count,
-            "inf": data.avg_monthly_inflow,
-            "strk": data.utility_payment_streak,
-            "rech": data.mobile_recharge_freq,
-            "gst": data.gst_filed,
-            "rent": data.rental_payment_months,
-            "emp": data.employment_type,
-            "yrs": data.years_at_address,
-            "extra": json.dumps(data.extra_data) if data.extra_data else None,
-            "now": datetime.now()
-        })
-        app_id = result.scalar()
-        
-        # TODO: Add logic for ML-driven score calculation here.
-        
-        await self.db.commit()
-        return {"application_id": app_id, "status": "processed"}
-
-    async def get_history(self):
-        user_id = get_current_user_id()
-        
-        query = text("""
-            SELECT s.* FROM scores s
-            JOIN applications a ON s.application_id = a.id
-            WHERE a.user_id = :uid
-            ORDER BY s.created_at DESC
-        """)
-        
-        result = await self.db.execute(query, {"uid": user_id})
-        return [dict(row._mapping) for row in result]
+async def get_score_by_id(score_id: int, user_id: str, db: AsyncSession):
+    return await fetch_score_by_id(db, score_id, user_id)

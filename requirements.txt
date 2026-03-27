@@ -4,7 +4,9 @@ pydantic
 uvicorn
 pydantic-settings
 pytest
-python-jose
+python-jose[cryptography]
+cryptography
+PyJWT[crypto]
 scikit-learn
 xgboost
 matplotlib
